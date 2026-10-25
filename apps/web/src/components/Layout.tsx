@@ -10,7 +10,7 @@ import styles from "./Layout.module.css";
 // Nav links as data. Add a page here (plus its <Route> in App.tsx).
 const links = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
+  { to: "/credentials", label: "Credentials" },
   { to: "/cooking", label: "Cooking" },
   { to: "/games", label: "Games" },
   { to: "/interviews", label: "Interviews" },

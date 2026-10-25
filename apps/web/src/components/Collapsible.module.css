@@ -1,0 +1,87 @@
+/* Styles for components/Collapsible.tsx. */
+
+.heading {
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* The whole heading row is the button, so the click target is large. */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-1) 0;
+  background: none;
+  border: none;
+  color: var(--text);
+  font: inherit; /* buttons don't inherit fonts by default */
+  text-align: left;
+  cursor: pointer;
+}
+.trigger:hover {
+  color: var(--accent);
+}
+
+/* The chevron is two borders on a small square, rotated 45 degrees. */
+.chevron {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.25rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg); /* points down = closed */
+  transition: transform 0.3s ease;
+}
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(-135deg); /* points up = open */
+}
+
+/* ---------- Animated panel ----------
+   Heights can't be animated to "auto", but grid row sizes can:
+   0fr (collapsed) to 1fr (full content height) animates smoothly in all
+   modern browsers. The inner element has overflow: hidden and min-height: 0,
+   which lets it shrink to nothing while the row is 0fr.
+
+   visibility: hidden while closed removes the content from the tab order and
+   from screen readers, so keyboard users can't tab into invisible links.
+   It switches on a delay when closing, so the content stays visible until
+   the animation finishes. */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+.panel.open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.3s ease,
+    visibility 0s;
+}
+
+/* Horizontal padding plus a matching negative margin gives focus rings room
+   so overflow: hidden doesn't clip them at the edges. */
+.panelInner {
+  overflow: hidden;
+  min-height: 0;
+  padding-inline: 6px;
+  margin-inline: -6px;
+}
+
+.panelContent {
+  padding-top: var(--space-2);
+  padding-bottom: 6px;
+}
+
+/* Respect the OS "reduce motion" setting. */
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .panel,
+  .panel.open {
+    transition: none;
+  }
+}

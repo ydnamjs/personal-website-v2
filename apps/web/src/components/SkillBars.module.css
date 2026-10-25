@@ -1,0 +1,225 @@
+/* Styles for components/SkillBars.tsx. */
+
+/* ---------- Group-by toggle ---------- */
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.controlLabel {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.toggleButton {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: none;
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  cursor: pointer;
+}
+.toggleButton + .toggleButton {
+  border-left: 1px solid var(--border);
+}
+.toggleButton:hover {
+  color: var(--text);
+}
+.toggleButton[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+/* The group clips overflow to keep rounded corners, so draw the focus ring
+   inside the button instead of outside it. */
+.toggleButton:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ---------- Groups ---------- */
+/* min(20rem, 100%) stops cards overflowing screens narrower than 20rem. */
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-3);
+}
+
+.group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: var(--space-2) var(--space-3);
+}
+
+.groupTitle {
+  margin: 0 0 var(--space-2);
+  font-size: 1.1rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* One row per skill: name | bar | duration. */
+.skill {
+  display: grid;
+  grid-template-columns: 7rem 1fr 5.5rem;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.name {
+  font-weight: 600;
+}
+
+.duration {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+/* ---------- Bars ----------
+   The track is the glass tube; the fill is the liquid inside it. */
+.track {
+  height: 1.25rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fill {
+  position: relative; /* anchor for the bubbles and overlays */
+  height: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--accent); /* fallback if color-mix isn't supported */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 75%, white),
+    var(--accent)
+  );
+  /* Grows from zero to the width set inline in the TSX. */
+  animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes grow {
+  from {
+    width: 0;
+  }
+}
+
+/* Sheen: a soft diagonal highlight that drifts left to right. */
+.fill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 65%
+  );
+  background-size: 200% 100%;
+  animation: sheen 3.2s linear infinite;
+}
+
+@keyframes sheen {
+  from {
+    background-position: -20% 0;
+  }
+  to {
+    background-position: 120% 0;
+  }
+}
+
+/* Gloss: a thin highlight along the top, like light on a glass tube. */
+.fill::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Each bubble gets its position, size, and timing from custom properties
+   set inline in the TSX (--x, --y, --size, --delay, --duration). */
+.bubble {
+  position: absolute;
+  bottom: -0.4rem;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: rgba(183, 27, 255, 0.4);
+  border: 1px solid rgba(243, 37, 243, 0.55);
+  opacity: 0; /* the rise animation fades each bubble in and out */
+  animation: rise var(--duration) ease-in infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes rise {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(3px, -0.7rem) scale(0.9);
+  }
+  100% {
+    transform: translate(-2px, -1.6rem) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* ---------- Reduced motion ----------
+   For people with "reduce motion" turned on in their OS: no animation at
+   all. The bubbles stop rising and sit still at their resting heights (--y),
+   and the sheen is parked partway across the bar. */
+@media (prefers-reduced-motion: reduce) {
+  .fill,
+  .fill::before,
+  .bubble {
+    animation: none;
+  }
+
+  .fill::before {
+    background-position: 40% 0;
+  }
+
+  .bubble {
+    bottom: var(--y);
+    opacity: 1;
+  }
+}
+
+/* On narrow screens, give the bar its own full-width line. */
+@media (max-width: 30rem) {
+  .skill {
+    grid-template-columns: 1fr auto;
+  }
+  .track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

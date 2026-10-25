@@ -1,7 +1,11 @@
+// Routes: reads the current URL (which BrowserRouter in main.tsx tracks and
+//   shares with everything inside it) and picks the matching <Route>.
+// Route: one entry in the lookup table, "when the URL looks like this, draw
+//   this element."
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import About from "./pages/About";
+import Credentials from "./pages/Credentials";
 import Cooking from "./pages/Cooking";
 import Games from "./pages/Games";
 import Interviews from "./pages/Interviews";
@@ -18,11 +22,10 @@ export default function App() {
           The matched child appears where Layout places its <Outlet />. */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/credentials" element={<Credentials />} />
         <Route path="/cooking" element={<Cooking />} />
         <Route path="/games" element={<Games />} />
         <Route path="/interviews" element={<Interviews />} />
-
         {/* "*" matches any URL not matched above: the 404 page. */}
         <Route path="*" element={<NotFound />} />
       </Route>
