@@ -5,12 +5,12 @@
 :root {
   color-scheme: light dark;
 
-  --bg: #fbf8f3;
-  --surface: #f2ece2;
-  --text: #2a2622;
-  --text-muted: #6b6258;
-  --border: #e0d8cb;
-  --accent: #b84a22;
+  --bg: #faf8fd;
+  --surface: #f0ecf8;
+  --text: #26212f;
+  --text-muted: #675f78;
+  --border: #ddd6ea;
+  --accent: #6d3fc0;
 
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-heading: Georgia, "Times New Roman", serif;
@@ -26,12 +26,12 @@
    var(--bg) etc. switches automatically when the OS is in dark mode. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #16130f;
-    --surface: #211d18;
-    --text: #efe9df;
-    --text-muted: #a99f92;
-    --border: #3a342c;
-    --accent: #f0916a;
+    --bg: #14111a;
+    --surface: #1d1926;
+    --text: #ece8f4;
+    --text-muted: #a69db8;
+    --border: #352f45;
+    --accent: #b79cff;
   }
 }
 
