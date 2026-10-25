@@ -1,0 +1,13 @@
+{
+  "name": "personal-website-v2",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*", "services/*"],
+    "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/web",
+    "lint": "npm run lint -w apps/web"
+  }
+}
