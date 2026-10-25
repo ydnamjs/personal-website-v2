@@ -1,13 +1,13 @@
-// NavLink: React Router's version of <a>. On a plain left click it stops the
-//   browser's normal page request, updates the URL locally, and tells the
-//   router to redraw. It also adds class="active" and aria-current="page"
-//   to itself when its link matches the current URL.
-// Outlet: a placeholder that renders the matched child route's element.
-import { NavLink, Outlet } from "react-router-dom";
+// Link: like NavLink but without the "active" tracking. Good for one-off
+//   links such as the site name.
+// NavLink: a link that knows when it points at the current page.
+// Outlet: placeholder where the matched page renders.
+import { Link, NavLink, Outlet } from "react-router-dom";
+// Importing a .module.css file gives an object mapping each class name in the
+// file to its unique, generated name: styles.header -> "Layout_header__x7k2a".
+import styles from "./Layout.module.css";
 
-// The nav links described as data. The <NavLink>s below are generated from
-// this list, so adding a page means adding one line here (plus its <Route>
-// in App.tsx).
+// Nav links as data. Add a page here (plus its <Route> in App.tsx).
 const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
@@ -16,57 +16,55 @@ const links = [
   { to: "/interviews", label: "Interviews" },
 ];
 
-// Layout is the frame shared by every page. App.tsx wraps all routes in a
-// pathless <Route element={<Layout />}>, so this component renders first and
-// the matched page is drawn inside it. Because Layout stays the same as you
-// navigate, the header and footer are never torn down and rebuilt.
+// The frame shared by every page. It stays mounted while the page inside
+// the <Outlet /> changes.
 export default function Layout() {
   return (
     <>
-      {/* Skip link: a plain <a> (not a NavLink), so the router ignores it and
-          the browser handles the #main jump natively. It is the first
-          focusable element on the page, so the first Tab press lands here.
-          The CSS hides it off-screen (NOT display: none, which would remove
-          it from the tab order) and moves it into view on :focus. It lets
-          keyboard users bypass the nav on every page. */}
-      <a href="#main" className="skip-link">Skip to content</a>
+      {/* Hidden until focused; lets keyboard users jump past the nav. */}
+      <a href="#main" className={styles.skipLink}>Skip to content</a>
 
-      {/* <header>, <nav>, <main>, and <footer> look like divs, but they are
-          "landmarks": assistive tech such as screen readers can list them and
-          jump between them. Lowercase tags are plain HTML; capitalized tags
-          (NavLink, Outlet) are React components. */}
-      <header>
-        {/* aria-label names this landmark, which matters once a page has more
-            than one <nav> (e.g. a footer nav) so they can be told apart. */}
-        <nav aria-label="Main">
-          {/* .map() turns each entry in `links` into a <NavLink>. `key` gives
-              React a stable identity for each item in a generated list. */}
-          {links.map((l) => (
-            // `end` means "active only on an exact URL match". Without it,
-            // a link to "/cooking" is also active on "/cooking/some-post"
-            // (what we want for most tabs). Home gets `end` so the "/" link
-            // is not treated as a prefix of every URL.
-            <NavLink key={l.to} to={l.to} end={l.to === "/"}>
-              {l.label}
-            </NavLink>
-          ))}
-        </nav>
+      <header className={styles.header}>
+        {/* Inner wrapper keeps header content aligned with the page content. */}
+        <div className={styles.headerInner}>
+          <Link to="/" className={styles.brand}>Michael Snead</Link>
+
+          <nav aria-label="Main" className={styles.nav}>
+            {links.map((l) => (
+              // `end` = exact match only, so Home isn't active on every page.
+              //
+              // className can be a function. NavLink calls it with
+              // { isActive } and uses the string we return. We do this
+              // because the plain "active" class NavLink adds by default
+              // would NOT match a module's renamed .active class. (NavLink
+              // still sets aria-current="page" on its own.)
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end={l.to === "/"}
+                className={({ isActive }) =>
+                  isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+                }
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
       </header>
 
-      {/* id="main" is the target of the skip link's href="#main". */}
-      <main id="main">
-        {/* Outlet is where the matched page renders. For /about, the router
-            matches a chain: Layout, then About. It renders Layout, and when
-            React reaches <Outlet /> it renders the next route in the chain
-            (<About />) right here. Navigating to /cooking swaps in <Cooking />
-            while everything around it stays mounted. */}
+      {/* The id stays a plain string because the skip link's href="#main"
+          targets it by name; CSS Modules only rename classes, not ids.
+          tabIndex={-1} lets the skip link move keyboard focus here. */}
+      <main id="main" className={styles.main} tabIndex={-1}>
         <Outlet />
       </main>
 
-      {/* A landmark like the others. It sits after <main> only because we put
-          it there in the code. {} lets us drop in JavaScript, so the year updates itself. */}
-      <footer>
-        <p>© {new Date().getFullYear()} Michael Snead</p>
+      <footer className={styles.footer}>
+        <div className={styles.footerInner}>
+          <p>© {new Date().getFullYear()} Michael Snead</p>
+          <p>Built with React and TypeScript</p>
+        </div>
       </footer>
     </>
   );

@@ -1,26 +1,77 @@
+/* ---------- Design tokens ----------
+   Colors, fonts, and spacing live here as CSS variables. Component CSS modules
+   (like components/Layout.module.css) read them with var(--name) but never define
+   them, so the whole site can be re-themed by editing this one block. */
+:root {
+  color-scheme: light dark;
+
+  --bg: #fbf8f3;
+  --surface: #f2ece2;
+  --text: #2a2622;
+  --text-muted: #6b6258;
+  --border: #e0d8cb;
+  --accent: #b84a22;
+
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: Georgia, "Times New Roman", serif;
+
+  --content-width: 60rem;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 3rem;
+}
+
+/* Dark values: same variable names, different colors. Everything that uses
+   var(--bg) etc. switches automatically when the OS is in dark mode. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16130f;
+    --surface: #211d18;
+    --text: #efe9df;
+    --text-muted: #a99f92;
+    --border: #3a342c;
+    --accent: #f0916a;
+  }
+}
+
+/* ---------- Base styles ----------
+   Rules that apply to the whole site. Anything specific to one component
+   belongs in that component's own CSS file. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
   line-height: 1.6;
 }
 
-nav {
+/* React mounts into #root. Making it a full-height flex column lets the
+   page's <main> grow to fill spare space, which keeps the footer at the
+   bottom of short pages (see .main in Layout.module.css). */
+#root {
+  min-height: 100vh;
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  flex-direction: column;
 }
 
-main {
-  padding: 1rem;
-  max-width: 60rem;
-  margin: 0 auto;
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
 }
 
-.skip-link {
-  position: absolute;
-  left: -9999px;
+a {
+  color: var(--accent);
 }
-.skip-link:focus {
-  left: 1rem;
-  top: 1rem;
+
+/* Visible keyboard focus on everything interactive. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }

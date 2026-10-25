@@ -1,0 +1,104 @@
+/* CSS Module for components/Layout.tsx.
+   Vite rewrites every class name in this file to a unique one (something like
+   Layout_header__x7k2a), so these names can't collide with classes anywhere
+   else. Layout.tsx reads them as properties: styles.header, styles.nav, etc.
+   Colors, fonts, and spacing still come from the tokens in index.css. */
+
+/* ---------- Skip link ---------- */
+.skipLink {
+  position: absolute;
+  left: -9999px; /* off-screen but still tabbable (display: none is not) */
+  background: var(--accent);
+  color: var(--bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 0.25rem;
+  z-index: 100;
+}
+.skipLink:focus {
+  left: var(--space-2);
+  top: var(--space-2);
+}
+
+/* ---------- Header ---------- */
+.header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.headerInner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-2);
+  display: flex;
+  flex-wrap: wrap; /* nav drops under the name on narrow screens */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+
+.brand {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+.navLink {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+.navLink:hover {
+  color: var(--text);
+}
+
+/* Applied by Layout.tsx to the NavLink for the current page. Declared after
+   .navLink so it wins when both classes are on the same element. */
+.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- Main ---------- */
+.main {
+  flex: 1; /* take all spare vertical space (works with #root in index.css) */
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-2);
+}
+.main:focus {
+  outline: none; /* focus lands here via the skip link; no ring needed */
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.footerInner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+/* Element selectors are fine inside a module when they hang off a scoped
+   class: this only affects <p> tags inside .footer. */
+.footer p {
+  margin: 0;
+}
